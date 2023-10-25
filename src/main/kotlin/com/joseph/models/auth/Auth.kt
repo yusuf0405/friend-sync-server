@@ -1,10 +1,11 @@
-package com.joseph.models
+package com.joseph.models.auth
 
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class SignUpParams(
     val name: String,
+    val lastName: String,
     val email: String,
     val password: String,
 )
@@ -25,9 +26,8 @@ data class AuthResponse(
 data class AuthResponseData(
     val id: Int,
     val name: String,
-    val bio: String,
+    val lastName: String,
+    val bio: String?,
     val avatar: String? = null,
     val token: String,
-    val followersCount: Int = 0,
-    val followingCount: Int = 0,
 )

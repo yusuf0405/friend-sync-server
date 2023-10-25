@@ -1,7 +1,9 @@
-package com.joseph.dao
+package com.joseph.db.dao
 
-import com.joseph.models.User
-import com.joseph.models.UserRow
+import com.joseph.db.tables.PostImageUrlRow
+import com.joseph.db.tables.PostRow
+import com.joseph.db.tables.SubscriptionRow
+import com.joseph.db.tables.UserRow
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +18,9 @@ object DatabaseFactory {
         Database.connect(createHikariDataSource())
         transaction {
             SchemaUtils.create(UserRow)
+            SchemaUtils.create(PostImageUrlRow)
+            SchemaUtils.create(PostRow)
+            SchemaUtils.create(SubscriptionRow)
         }
     }
 
@@ -34,8 +39,8 @@ object DatabaseFactory {
         return HikariDataSource(hikariConfig)
     }
 
+
     suspend fun <T> dbQuery(
         block: suspend () -> T
     ) = newSuspendedTransaction(Dispatchers.IO) { block() }
-
 }

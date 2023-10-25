@@ -1,6 +1,6 @@
 package com.joseph
 
-import com.joseph.dao.DatabaseFactory
+import com.joseph.db.dao.DatabaseFactory
 import com.joseph.di.configureDi
 import io.ktor.server.application.*
 import io.ktor.server.engine.*

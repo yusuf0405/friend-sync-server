@@ -15,5 +15,4 @@ sealed class Response<T>(
         data = data,
         code = code
     )
-
 }
