@@ -7,4 +7,10 @@ interface PostDao {
     suspend fun addPost(post: AddPostParams): Post?
 
     suspend fun fetchUserPosts(userId: Int): List<Post>
+
+    suspend fun fetchUserRecommendedPosts(
+        page: Int,
+        pageSize: Int,
+        followedUserIds: List<Int>
+    ): List<Post>
 }

@@ -16,12 +16,11 @@ import com.joseph.repository.subscription.SubscriptionRepository
 import com.joseph.repository.subscription.SubscriptionRepositoryImpl
 import com.joseph.repository.user.UserRepository
 import com.joseph.repository.user.UserRepositoryImpl
-import org.koin.core.scope.get
 import org.koin.dsl.module
 
 val appModule = module {
     single<UserRepository> { UserRepositoryImpl(get(), get()) }
-    single<PostRepository> { PostRepositoryImpl(get()) }
+    single<PostRepository> { PostRepositoryImpl(get(), get()) }
     single<SubscriptionRepository> { SubscriptionRepositoryImpl(get()) }
     single<UserDao> { UserDaoImpl(get(), get(), get()) }
     single<PostDao> { PostDaoImpl(get()) }

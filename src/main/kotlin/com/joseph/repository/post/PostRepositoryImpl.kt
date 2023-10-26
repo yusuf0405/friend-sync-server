@@ -1,9 +1,12 @@
 package com.joseph.repository.post
 
 import com.joseph.db.dao.post.PostDao
+import com.joseph.db.dao.subscription.SubscriptionDao
 import com.joseph.models.post.AddPostParams
 import com.joseph.models.post.PostListResponse
 import com.joseph.models.post.PostResponse
+import com.joseph.models.post.PostWithPagingParam
+import com.joseph.repository.subscription.SubscriptionRepository
 import com.joseph.util.Response
 import io.ktor.http.*
 import org.postgresql.util.PSQLException
@@ -11,6 +14,7 @@ import java.util.concurrent.CancellationException
 
 class PostRepositoryImpl(
     private val postDao: PostDao,
+    private val subscriptionDao: SubscriptionDao
 ) : PostRepository {
     override suspend fun addPost(addPost: AddPostParams): Response<PostResponse> {
         return try {
@@ -53,6 +57,30 @@ class PostRepositoryImpl(
             Response.Success(
                 data = PostListResponse(
                     data = postDao.fetchUserPosts(userId)
+                )
+            )
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Throwable) {
+            Response.Error(
+                code = HttpStatusCode.InternalServerError,
+                data = PostListResponse(
+                    errorMessage = e.message
+                )
+            )
+        }
+    }
+
+    override suspend fun fetchUserRecommendedPosts(param: PostWithPagingParam): Response<PostListResponse> {
+        return try {
+            val followedUserIds = subscriptionDao.fetchSubscriptionUserIds(param.userId)
+            Response.Success(
+                data = PostListResponse(
+                    data = postDao.fetchUserRecommendedPosts(
+                        page = param.page,
+                        pageSize = param.pageSize,
+                        followedUserIds = followedUserIds
+                    )
                 )
             )
         } catch (e: CancellationException) {

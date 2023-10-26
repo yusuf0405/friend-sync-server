@@ -7,12 +7,10 @@ import com.joseph.db.tables.UserRow
 import com.joseph.mappers.ResultRowToPostMapper
 import com.joseph.models.post.AddPostParams
 import com.joseph.models.post.Post
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 
 class PostDaoImpl(
-    private val resultRowToPostMapper: ResultRowToPostMapper
+    private val resultRowToPostMapper: ResultRowToPostMapper,
 ) : PostDao {
     override suspend fun addPost(params: AddPostParams): Post? {
         return dbQuery {
@@ -39,6 +37,20 @@ class PostDaoImpl(
     override suspend fun fetchUserPosts(userId: Int): List<Post> {
         return dbQuery {
             PostRow.select { PostRow.userId eq userId }.map(::rowToPost)
+        }
+    }
+
+    override suspend fun fetchUserRecommendedPosts(
+        page: Int,
+        pageSize: Int,
+        followedUserIds: List<Int>
+    ): List<Post> {
+        val offset = (page - 1) * pageSize
+        return dbQuery {
+            PostRow.select { PostRow.userId inList followedUserIds }
+                .orderBy(PostRow.releaseDate, SortOrder.DESC)
+                .limit(pageSize, offset.toLong())
+                .map(::rowToPost)
         }
     }
 

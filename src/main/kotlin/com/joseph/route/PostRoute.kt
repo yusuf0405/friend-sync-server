@@ -1,7 +1,9 @@
 package com.joseph.route
 
 import com.joseph.models.auth.AuthResponse
+import com.joseph.models.auth.SignUpParams
 import com.joseph.models.post.AddPostParams
+import com.joseph.models.post.PostWithPagingParam
 import com.joseph.models.subscription.FetchSubscriptionInfo
 import com.joseph.repository.post.PostRepository
 import com.joseph.util.EXTERNAL_POST_IMAGE_PATH
@@ -90,10 +92,8 @@ fun Routing.postRoute() {
                 call.respond(HttpStatusCode.BadRequest, ex.message.toString())
             }
         }
-
         get("list/{userId}") {
             val userId = call.parameters["userId"]?.toIntOrNull()
-
             if (userId == null) {
                 call.respond(
                     status = HttpStatusCode.BadRequest,
@@ -104,6 +104,23 @@ fun Routing.postRoute() {
                 return@get
             }
             val result = repository.fetchUserPosts(userId)
+            call.respond(
+                status = result.code,
+                message = result.data
+            )
+        }
+        post ("/recommended") {
+            val params = call.receiveNullable<PostWithPagingParam>()
+            if (params == null) {
+                call.respond(
+                    status = HttpStatusCode.BadRequest,
+                    message = AuthResponse(
+                        errorMessage = invalid_credentials
+                    )
+                )
+                return@post
+            }
+            val result = repository.fetchUserRecommendedPosts(params)
             call.respond(
                 status = result.code,
                 message = result.data
