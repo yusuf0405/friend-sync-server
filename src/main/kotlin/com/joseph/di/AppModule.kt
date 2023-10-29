@@ -10,6 +10,8 @@ import com.joseph.mappers.ResultRowToPostMapper
 import com.joseph.mappers.ResultRowToPostMapperImpl
 import com.joseph.mappers.ResultRowToUserInfoMapper
 import com.joseph.mappers.ResultRowToUserMapper
+import com.joseph.repository.auth.AuthRepository
+import com.joseph.repository.auth.AuthRepositoryImpl
 import com.joseph.repository.post.PostRepository
 import com.joseph.repository.post.PostRepositoryImpl
 import com.joseph.repository.subscription.SubscriptionRepository
@@ -20,6 +22,7 @@ import org.koin.dsl.module
 
 val appModule = module {
     single<UserRepository> { UserRepositoryImpl(get(), get()) }
+    single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<PostRepository> { PostRepositoryImpl(get(), get()) }
     single<SubscriptionRepository> { SubscriptionRepositoryImpl(get()) }
     single<UserDao> { UserDaoImpl(get(), get(), get()) }

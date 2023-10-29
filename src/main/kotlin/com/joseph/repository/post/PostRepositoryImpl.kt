@@ -2,11 +2,7 @@ package com.joseph.repository.post
 
 import com.joseph.db.dao.post.PostDao
 import com.joseph.db.dao.subscription.SubscriptionDao
-import com.joseph.models.post.AddPostParams
-import com.joseph.models.post.PostListResponse
-import com.joseph.models.post.PostResponse
-import com.joseph.models.post.PostWithPagingParam
-import com.joseph.repository.subscription.SubscriptionRepository
+import com.joseph.models.post.*
 import com.joseph.util.Response
 import io.ktor.http.*
 import org.postgresql.util.PSQLException
@@ -71,14 +67,18 @@ class PostRepositoryImpl(
         }
     }
 
-    override suspend fun fetchUserRecommendedPosts(param: PostWithPagingParam): Response<PostListResponse> {
+    override suspend fun fetchUserRecommendedPosts(
+        page: Int,
+        pageSize: Int,
+        userId: Int
+    ): Response<PostListResponse> {
         return try {
-            val followedUserIds = subscriptionDao.fetchSubscriptionUserIds(param.userId)
+            val followedUserIds = subscriptionDao.fetchSubscriptionUserIds(userId)
             Response.Success(
                 data = PostListResponse(
                     data = postDao.fetchUserRecommendedPosts(
-                        page = param.page,
-                        pageSize = param.pageSize,
+                        page = page,
+                        pageSize = pageSize,
                         followedUserIds = followedUserIds
                     )
                 )
@@ -91,6 +91,27 @@ class PostRepositoryImpl(
                 data = PostListResponse(
                     errorMessage = e.message
                 )
+            )
+        }
+    }
+
+    override suspend fun searchPostsWithParams(
+        page: Int, pageSize: Int,
+        query: String
+    ): Response<PostListResponse> {
+        val data = postDao.searchPostsWithParams(
+            page = page,
+            pageSize = pageSize,
+            query = query
+        )
+        return try {
+            Response.Success(data = PostListResponse(data = data))
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Throwable) {
+            Response.Error(
+                code = HttpStatusCode.InternalServerError,
+                data = PostListResponse(errorMessage = e.message)
             )
         }
     }

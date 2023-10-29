@@ -1,13 +1,10 @@
 package com.joseph.route
 
-import com.joseph.models.auth.AuthResponse
-import com.joseph.models.auth.SignUpParams
 import com.joseph.models.post.AddPostParams
-import com.joseph.models.post.PostWithPagingParam
-import com.joseph.models.subscription.FetchSubscriptionInfo
 import com.joseph.repository.post.PostRepository
-import com.joseph.util.EXTERNAL_POST_IMAGE_PATH
-import com.joseph.util.POST_IMAGE_PATH
+import com.joseph.util.*
+import com.joseph.util.extensions.invalidCredentialsError
+import com.joseph.util.extensions.saveImage
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
@@ -17,127 +14,158 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 import java.io.File
-import java.util.*
 
+private const val POST_REQUEST_PATH = "/post"
+private const val ADD_POST_REQUEST_PATH = "/add"
+private const val RECOMMENDED_POST_REQUEST_PATH = "/recommended"
 
-private const val IMAGE_PARAM_NAME = "image"
-private const val MESSAGE_PARAM_NAME = "message"
-private const val USER_ID_PARAM_NAME = "user_id"
 fun Routing.postRoute() {
 
     val repository by inject<PostRepository>()
 
     staticFiles("/images", File("static/post_pictures"))
 
-    route(path = "/post") {
-        post("/add") {
-            try {
-                val multipart = call.receiveMultipart()
-
-                var fileName: String? = null
-                var message: String? = null
-                var userId: Int? = null
-                val imageUrls = mutableListOf<String>()
-
-                var index = 0
-                try {
-                    multipart.forEachPart { partData ->
-                        when (partData) {
-                            is PartData.FileItem -> {
-                                if (partData.name == "${IMAGE_PARAM_NAME}$index") {
-                                    index++
-                                    fileName = partData.save(POST_IMAGE_PATH)
-                                    val imageUrl = "${EXTERNAL_POST_IMAGE_PATH}/$fileName"
-                                    imageUrls.add(imageUrl)
-                                }
-                            }
-
-                            is PartData.FormItem -> {
-                                if (partData.name == MESSAGE_PARAM_NAME) message = partData.value
-                                if (partData.name == USER_ID_PARAM_NAME) userId = partData.value.toInt()
-                            }
-
-                            else -> Unit
-                        }
-                    }
-
-                } catch (ex: Exception) {
-                    File("${POST_IMAGE_PATH}/$fileName").delete()
-                    ex.printStackTrace()
-                    call.respond(HttpStatusCode.InternalServerError, ex.message.toString())
-                }
-
-                if (userId == null) {
-                    call.respond(
-                        status = HttpStatusCode.BadRequest,
-                        message = AuthResponse(
-                            errorMessage = invalid_credentials
-                        )
-                    )
-                    return@post
-                }
-                val response = repository.addPost(
-                    post = AddPostParams(
-                        userId = userId!!,
-                        imageUrls = imageUrls,
-                        message = message
-                    )
-                )
-
-                call.respond(
-                    status = response.code,
-                    message = response.data
-                )
-            } catch (ex: Exception) {
-                call.respond(HttpStatusCode.BadRequest, ex.message.toString())
-            }
-        }
-        get("list/{userId}") {
-            val userId = call.parameters["userId"]?.toIntOrNull()
-            if (userId == null) {
-                call.respond(
-                    status = HttpStatusCode.BadRequest,
-                    message = AuthResponse(
-                        errorMessage = invalid_credentials
-                    )
-                )
-                return@get
-            }
-            val result = repository.fetchUserPosts(userId)
-            call.respond(
-                status = result.code,
-                message = result.data
-            )
-        }
-        post ("/recommended") {
-            val params = call.receiveNullable<PostWithPagingParam>()
-            if (params == null) {
-                call.respond(
-                    status = HttpStatusCode.BadRequest,
-                    message = AuthResponse(
-                        errorMessage = invalid_credentials
-                    )
-                )
-                return@post
-            }
-            val result = repository.fetchUserRecommendedPosts(params)
-            call.respond(
-                status = result.code,
-                message = result.data
-            )
-        }
+    route(path = POST_REQUEST_PATH) {
+        userPosts(repository)
+        recommendedPosts(repository)
+        addPost(repository)
+        searchPosts(repository)
     }
 }
 
-fun PartData.FileItem.save(path: String): String {
-    val fileBytes = streamProvider().readBytes()
-    val fileExtension = originalFileName?.takeLastWhile { it != '.' }
-    val fileName = UUID.randomUUID().toString() + "." + fileExtension
-    val folder = File(path)
-    if (!folder.parentFile.exists()) {
-        folder.parentFile.mkdirs()
+private fun Route.userPosts(repository: PostRepository) {
+    get("list/{$USER_ID_PARAM}") {
+        val userId = call.parameters[USER_ID_PARAM]?.toIntOrNull()
+        if (userId == null) {
+            call.invalidCredentialsError(USER_ID_PARAM)
+            return@get
+        }
+        val result = repository.fetchUserPosts(userId)
+        call.respond(
+            status = result.code,
+            message = result.data
+        )
     }
-    folder.mkdir()
-    File("$path$fileName").writeBytes(fileBytes)
-    return fileName
+}
+
+private fun Route.recommendedPosts(repository: PostRepository) {
+    get(RECOMMENDED_POST_REQUEST_PATH) {
+        val userId = call.parameters[USER_ID_PARAM]?.toIntOrNull()
+        val page = call.parameters[PAGE_PARAM]?.toIntOrNull()
+        val pageSize = call.parameters[PAGE_SIZE_PARAM]?.toIntOrNull()
+        if (userId == null) {
+            call.invalidCredentialsError(USER_ID_PARAM)
+            return@get
+        }
+        if (page == null) {
+            call.invalidCredentialsError(PAGE_PARAM)
+            return@get
+        }
+
+        if (pageSize == null) {
+            call.invalidCredentialsError(PAGE_SIZE_PARAM)
+            return@get
+        }
+
+        val result = repository.fetchUserRecommendedPosts(
+            page = page,
+            userId = userId,
+            pageSize = pageSize
+        )
+        call.respond(
+            status = result.code,
+            message = result.data
+        )
+    }
+}
+
+private fun Route.searchPosts(repository: PostRepository) {
+    get(SEARCH_REQUEST_PATCH) {
+        val pageSize = call.parameters[PAGE_SIZE_PARAM]?.toIntOrNull()
+        val page = call.parameters[PAGE_PARAM]?.toIntOrNull()
+        val query = call.parameters[QUERY_PARAM]
+        if (pageSize == null) {
+            call.invalidCredentialsError(PAGE_SIZE_PARAM)
+            return@get
+        }
+        if (page == null) {
+            call.invalidCredentialsError(PAGE_PARAM)
+            return@get
+        }
+
+        if (query == null) {
+            call.invalidCredentialsError(QUERY_PARAM)
+            return@get
+        }
+        val result = repository.searchPostsWithParams(
+            page = page,
+            pageSize = pageSize,
+            query = query
+        )
+        call.respond(
+            status = result.code,
+            message = result.data
+        )
+    }
+
+}
+
+private fun Route.addPost(repository: PostRepository) {
+    post(ADD_POST_REQUEST_PATH) {
+        try {
+            val multipart = call.receiveMultipart()
+
+            var fileName: String? = null
+            var message: String? = null
+            var userId: Int? = null
+            val imageUrls = mutableListOf<String>()
+
+            var index = 0
+            try {
+                multipart.forEachPart { partData ->
+                    when (partData) {
+                        is PartData.FileItem -> {
+                            if (partData.name == "${IMAGE_PARAM_NAME}$index") {
+                                index++
+                                fileName = partData.saveImage(POST_IMAGE_PATH)
+                                val imageUrl = "${EXTERNAL_POST_IMAGE_PATH}/$fileName"
+                                imageUrls.add(imageUrl)
+                            }
+                        }
+
+                        is PartData.FormItem -> {
+                            if (partData.name == MESSAGE_PARAM_NAME) message = partData.value
+                            if (partData.name == USER_ID_PARAM) userId = partData.value.toInt()
+                        }
+
+                        else -> Unit
+                    }
+                }
+
+            } catch (ex: Exception) {
+                File("${POST_IMAGE_PATH}/$fileName").delete()
+                ex.printStackTrace()
+                call.respond(HttpStatusCode.InternalServerError, ex.message.toString())
+            }
+
+            if (userId == null) {
+                call.invalidCredentialsError(USER_ID_PARAM)
+                return@post
+            }
+            val response = repository.addPost(
+                post = AddPostParams(
+                    userId = userId!!,
+                    imageUrls = imageUrls,
+                    message = message
+                )
+            )
+
+            call.respond(
+                status = response.code,
+                message = response.data
+            )
+        } catch (ex: Exception) {
+            call.respond(HttpStatusCode.BadRequest, ex.message.toString())
+        }
+    }
 }

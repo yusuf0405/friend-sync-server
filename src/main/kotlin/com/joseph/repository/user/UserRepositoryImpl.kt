@@ -17,77 +17,31 @@ class UserRepositoryImpl(
     private val subscriptionDao: SubscriptionDao,
 ) : UserRepository {
 
-    override suspend fun signUp(params: SignUpParams): Response<AuthResponse> {
-        return if (userAlreadyExist(params.email)) {
-            Response.Error(
-                code = HttpStatusCode.Conflict,
-                data = AuthResponse(
-                    errorMessage = "A user with this email already exists!",
-                )
-            )
-        } else {
-            val insertedUser = userDao.insert(params)
-            if (insertedUser == null) {
-                Response.Error(
-                    code = HttpStatusCode.InternalServerError,
-                    data = AuthResponse(
-                        errorMessage = "Ooops, sorry we could not register the user, try later!",
-                    )
-                )
-            } else {
-                Response.Success(
-                    data = AuthResponse(
-                        data = AuthResponseData(
-                            id = insertedUser.id,
-                            name = insertedUser.name,
-                            lastName = insertedUser.lastName,
-                            bio = insertedUser.bio,
-                            token = generateToken(params.email),
-                        )
-                    )
-                )
-            }
-        }
-    }
-
-    override suspend fun signIn(params: SignInParams): Response<AuthResponse> {
-        val user = userDao.findByEmail(params.email)
-        return if (user == null) {
-            Response.Error(
-                code = HttpStatusCode.NotFound,
-                data = AuthResponse(
-                    errorMessage = "Invalid credentials, no user with thies email!"
-                )
-            )
-        } else {
-            val hashPassword = hashPassword(params.password)
-            if (user.password == hashPassword) {
-                Response.Success(
-                    data = AuthResponse(
-                        data = AuthResponseData(
-                            id = user.id,
-                            name = user.name,
-                            lastName = user.lastName,
-                            avatar = user.avatar,
-                            bio = user.bio,
-                            token = generateToken(params.email),
-                        )
-                    )
-                )
-            } else {
-                Response.Error(
-                    code = HttpStatusCode.Forbidden,
-                    data = AuthResponse(
-                        errorMessage = "Invalid credentials, wrong password!"
-                    )
-                )
-            }
-        }
-    }
-
     override suspend fun fetchOnboardingUsers(userId: Int): Response<UserListResponse> {
         return try {
             val users = userDao.fetchOnboardingUsers(userId)
+            Response.Success(
+                data = UserListResponse(
+                    data = users
+                )
+            )
+        } catch (e: Throwable) {
+            Response.Error(
+                code = HttpStatusCode.InternalServerError,
+                data = UserListResponse(
+                    errorMessage = something_went_wrong
+                )
+            )
+        }
+    }
+
+    override suspend fun searchUsers(page: Int, pageSize: Int, query: String): Response<UserListResponse> {
+        return try {
+            val users = userDao.searchUsers(
+                page = page,
+                pageSize = pageSize,
+                query = query
+            )
             Response.Success(
                 data = UserListResponse(
                     data = users
@@ -134,9 +88,5 @@ class UserRepositoryImpl(
                 )
             )
         }
-    }
-
-    private suspend fun userAlreadyExist(email: String): Boolean {
-        return userDao.findByEmail(email) != null
     }
 }

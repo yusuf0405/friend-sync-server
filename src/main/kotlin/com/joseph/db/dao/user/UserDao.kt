@@ -12,5 +12,7 @@ interface UserDao {
 
     suspend fun fetchOnboardingUsers(userId: Int): List<UserInfo>
 
+    suspend fun searchUsers(page: Int, pageSize: Int, query: String): List<UserInfo>
+
     suspend fun fetchUserDetailById(userId: Int): User?
 }

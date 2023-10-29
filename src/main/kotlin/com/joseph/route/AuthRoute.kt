@@ -1,32 +1,29 @@
 package com.joseph.route
 
-import com.joseph.models.auth.AuthResponse
 import com.joseph.models.auth.SignInParams
 import com.joseph.models.auth.SignUpParams
-import com.joseph.repository.user.UserRepository
-import io.ktor.http.*
+import com.joseph.repository.auth.AuthRepository
+import com.joseph.util.extensions.invalidCredentialsError
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 
-val invalid_credentials = "Invalid credentials!"
-
+private const val SIGN_UP_REQUEST_PATH = "/signup"
+private const val LOGIN_REQUEST_PATH = "/login"
 fun Routing.authRouting() {
+    val repository by inject<AuthRepository>()
+    signup(repository)
+    login(repository)
+}
 
-    val repository by inject<UserRepository>()
-
-    route(path = "/signup") {
+private fun Route.signup(repository: AuthRepository) {
+    route(path = SIGN_UP_REQUEST_PATH) {
         post {
             val params = call.receiveNullable<SignUpParams>()
             if (params == null) {
-                call.respond(
-                    status = HttpStatusCode.BadRequest,
-                    message = AuthResponse(
-                        errorMessage = invalid_credentials
-                    )
-                )
+                call.invalidCredentialsError()
                 return@post
             }
 
@@ -38,16 +35,14 @@ fun Routing.authRouting() {
             )
         }
     }
-    route(path = "/login") {
+}
+
+private fun Route.login(repository: AuthRepository) {
+    route(path = LOGIN_REQUEST_PATH) {
         post {
             val params = call.receiveNullable<SignInParams>()
             if (params == null) {
-                call.respond(
-                    status = HttpStatusCode.BadRequest,
-                    message = AuthResponse(
-                        errorMessage = invalid_credentials
-                    )
-                )
+                call.invalidCredentialsError()
                 return@post
             }
 

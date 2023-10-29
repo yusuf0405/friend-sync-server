@@ -13,4 +13,10 @@ interface PostDao {
         pageSize: Int,
         followedUserIds: List<Int>
     ): List<Post>
+
+    suspend fun searchPostsWithParams(
+        page: Int,
+        pageSize: Int,
+        query: String
+    ): List<Post>
 }

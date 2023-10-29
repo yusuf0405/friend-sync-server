@@ -9,6 +9,14 @@ interface PostRepository {
     suspend fun fetchUserPosts(userId: Int): Response<PostListResponse>
 
     suspend fun fetchUserRecommendedPosts(
-        param: PostWithPagingParam
+        page: Int,
+        pageSize: Int,
+        userId: Int
+    ): Response<PostListResponse>
+
+    suspend fun searchPostsWithParams(
+        page: Int,
+        pageSize: Int,
+        query: String
     ): Response<PostListResponse>
 }

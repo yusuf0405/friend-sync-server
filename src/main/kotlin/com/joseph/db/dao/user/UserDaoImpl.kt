@@ -9,8 +9,8 @@ import com.joseph.mappers.ResultRowToUserMapper
 import com.joseph.models.auth.*
 import com.joseph.models.user.UserInfo
 import com.joseph.security.hashPassword
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import java.util.*
 
 class UserDaoImpl(
     private val subscriptionDao: SubscriptionDao,
@@ -62,6 +62,23 @@ class UserDaoImpl(
 
             /* Получаем информацию о рекомендованных пользователях из таблицы Users */
             return@dbQuery UserRow.select { UserRow.id inList recommendedUserIds }
+                .map(resultRowToUserInfoMapper::map)
+        }
+    }
+
+    override suspend fun searchUsers(
+        page: Int,
+        pageSize: Int,
+        query: String
+    ): List<UserInfo> {
+        val offset = (page - 1) * pageSize
+        // Добавлена подстановочный знак "%" в запрос для частичного совпадения
+        val searchQuery = "%${query.lowercase(Locale.getDefault())}%"
+
+        return dbQuery {
+            UserRow.select { (UserRow.firstName.lowerCase() like searchQuery) or (UserRow.lastName.lowerCase() like query) }
+                .orderBy(UserRow.release_date, SortOrder.DESC)
+                .limit(pageSize, offset.toLong())
                 .map(resultRowToUserInfoMapper::map)
         }
     }

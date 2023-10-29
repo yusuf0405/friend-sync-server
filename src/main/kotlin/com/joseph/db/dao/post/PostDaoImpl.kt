@@ -8,6 +8,7 @@ import com.joseph.mappers.ResultRowToPostMapper
 import com.joseph.models.post.AddPostParams
 import com.joseph.models.post.Post
 import org.jetbrains.exposed.sql.*
+import java.util.*
 
 class PostDaoImpl(
     private val resultRowToPostMapper: ResultRowToPostMapper,
@@ -36,7 +37,9 @@ class PostDaoImpl(
 
     override suspend fun fetchUserPosts(userId: Int): List<Post> {
         return dbQuery {
-            PostRow.select { PostRow.userId eq userId }.map(::rowToPost)
+            PostRow.select { PostRow.userId eq userId }
+                .orderBy(PostRow.releaseDate, SortOrder.DESC)
+                .map(::rowToPost)
         }
     }
 
@@ -48,6 +51,22 @@ class PostDaoImpl(
         val offset = (page - 1) * pageSize
         return dbQuery {
             PostRow.select { PostRow.userId inList followedUserIds }
+                .orderBy(PostRow.releaseDate, SortOrder.DESC)
+                .limit(pageSize, offset.toLong())
+                .map(::rowToPost)
+        }
+    }
+
+    override suspend fun searchPostsWithParams(
+        page: Int,
+        pageSize: Int,
+        query: String
+    ): List<Post> {
+        val offset = (page - 1) * pageSize
+        // Добавлена подстановочный знак "%" в запрос для частичного совпадения
+        val searchQuery = "%${query.lowercase(Locale.getDefault())}%"
+        return dbQuery {
+            PostRow.select { PostRow.message.lowerCase() like searchQuery }
                 .orderBy(PostRow.releaseDate, SortOrder.DESC)
                 .limit(pageSize, offset.toLong())
                 .map(::rowToPost)
