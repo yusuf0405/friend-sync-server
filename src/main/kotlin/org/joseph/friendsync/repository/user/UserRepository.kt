@@ -1,8 +1,8 @@
 package org.joseph.friendsync.repository.user
 
-import com.joseph.models.user.UserDetailResponse
-import com.joseph.models.user.UserListResponse
-import com.joseph.util.Response
+import org.joseph.friendsync.models.user.UserDetailResponse
+import org.joseph.friendsync.models.user.UserListResponse
+import org.joseph.friendsync.util.Response
 
 interface UserRepository {
 

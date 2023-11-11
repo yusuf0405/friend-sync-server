@@ -1,8 +1,8 @@
 package org.joseph.friendsync.repository.subscription
 
-import com.joseph.db.dao.subscription.SubscriptionDao
-import com.joseph.models.subscription.*
-import com.joseph.util.Response
+import org.joseph.friendsync.db.dao.subscription.SubscriptionDao
+import org.joseph.friendsync.models.subscription.*
+import org.joseph.friendsync.util.Response
 import io.ktor.http.*
 import java.util.concurrent.CancellationException
 

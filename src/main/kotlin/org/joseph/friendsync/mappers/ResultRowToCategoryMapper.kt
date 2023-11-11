@@ -1,7 +1,7 @@
 package org.joseph.friendsync.mappers
 
-import com.joseph.db.tables.CategoriesRow
-import com.joseph.models.categories.Category
+import org.joseph.friendsync.db.tables.CategoriesRow
+import org.joseph.friendsync.models.categories.Category
 import org.jetbrains.exposed.sql.ResultRow
 
 

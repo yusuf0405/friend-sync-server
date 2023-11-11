@@ -1,7 +1,7 @@
 package org.joseph.friendsync.db.dao.subscription
 
-import com.joseph.models.subscription.CreateOrCancelSubscription
-import com.joseph.models.subscription.SubscriptionResultUser
+import org.joseph.friendsync.models.subscription.CreateOrCancelSubscription
+import org.joseph.friendsync.models.subscription.SubscriptionResultUser
 
 interface SubscriptionDao {
 

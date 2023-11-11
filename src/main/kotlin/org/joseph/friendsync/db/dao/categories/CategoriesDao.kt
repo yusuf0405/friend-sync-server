@@ -1,6 +1,6 @@
 package org.joseph.friendsync.db.dao.categories
 
-import com.joseph.models.categories.Category
+import org.joseph.friendsync.models.categories.Category
 
 interface CategoriesDao {
 

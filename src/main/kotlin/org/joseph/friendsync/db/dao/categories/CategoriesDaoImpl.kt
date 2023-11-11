@@ -1,9 +1,9 @@
 package org.joseph.friendsync.db.dao.categories
 
-import com.joseph.db.dao.DatabaseFactory.dbQuery
-import com.joseph.db.tables.CategoriesRow
-import com.joseph.mappers.ResultRowToCategoryMapper
-import com.joseph.models.categories.Category
+import org.joseph.friendsync.db.dao.DatabaseFactory.dbQuery
+import org.joseph.friendsync.db.tables.CategoriesRow
+import org.joseph.friendsync.mappers.ResultRowToCategoryMapper
+import org.joseph.friendsync.models.categories.Category
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert

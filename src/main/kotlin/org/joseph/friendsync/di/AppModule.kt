@@ -1,24 +1,24 @@
 package org.joseph.friendsync.di
 
-import com.joseph.db.dao.categories.CategoriesDao
-import com.joseph.db.dao.categories.CategoriesDaoImpl
-import com.joseph.db.dao.post.PostDao
-import com.joseph.db.dao.post.PostDaoImpl
-import com.joseph.db.dao.subscription.SubscriptionDao
-import com.joseph.db.dao.subscription.SubscriptionDaoImpl
-import com.joseph.db.dao.user.UserDao
-import com.joseph.db.dao.user.UserDaoImpl
-import com.joseph.mappers.*
-import com.joseph.repository.auth.AuthRepository
-import com.joseph.repository.auth.AuthRepositoryImpl
-import com.joseph.repository.categories.CategoriesRepository
-import com.joseph.repository.categories.CategoriesRepositoryImpl
-import com.joseph.repository.post.PostRepository
-import com.joseph.repository.post.PostRepositoryImpl
-import com.joseph.repository.subscription.SubscriptionRepository
-import com.joseph.repository.subscription.SubscriptionRepositoryImpl
-import com.joseph.repository.user.UserRepository
-import com.joseph.repository.user.UserRepositoryImpl
+import org.joseph.friendsync.db.dao.categories.CategoriesDao
+import org.joseph.friendsync.db.dao.categories.CategoriesDaoImpl
+import org.joseph.friendsync.db.dao.post.PostDao
+import org.joseph.friendsync.db.dao.post.PostDaoImpl
+import org.joseph.friendsync.db.dao.subscription.SubscriptionDao
+import org.joseph.friendsync.db.dao.subscription.SubscriptionDaoImpl
+import org.joseph.friendsync.db.dao.user.UserDao
+import org.joseph.friendsync.db.dao.user.UserDaoImpl
+import org.joseph.friendsync.mappers.*
+import org.joseph.friendsync.repository.auth.AuthRepository
+import org.joseph.friendsync.repository.auth.AuthRepositoryImpl
+import org.joseph.friendsync.repository.categories.CategoriesRepository
+import org.joseph.friendsync.repository.categories.CategoriesRepositoryImpl
+import org.joseph.friendsync.repository.post.PostRepository
+import org.joseph.friendsync.repository.post.PostRepositoryImpl
+import org.joseph.friendsync.repository.subscription.SubscriptionRepository
+import org.joseph.friendsync.repository.subscription.SubscriptionRepositoryImpl
+import org.joseph.friendsync.repository.user.UserRepository
+import org.joseph.friendsync.repository.user.UserRepositoryImpl
 import org.koin.dsl.module
 
 val appModule = module {

@@ -1,13 +1,13 @@
 package org.joseph.friendsync.repository.auth
 
-import com.joseph.db.dao.user.UserDao
-import com.joseph.models.auth.AuthResponse
-import com.joseph.models.auth.AuthResponseData
-import com.joseph.models.auth.SignInParams
-import com.joseph.models.auth.SignUpParams
-import com.joseph.plugins.generateToken
-import com.joseph.security.hashPassword
-import com.joseph.util.Response
+import org.joseph.friendsync.db.dao.user.UserDao
+import org.joseph.friendsync.models.auth.AuthResponse
+import org.joseph.friendsync.models.auth.AuthResponseData
+import org.joseph.friendsync.models.auth.SignInParams
+import org.joseph.friendsync.models.auth.SignUpParams
+import org.joseph.friendsync.plugins.generateToken
+import org.joseph.friendsync.security.hashPassword
+import org.joseph.friendsync.util.Response
 import io.ktor.http.*
 
 class AuthRepositoryImpl(

@@ -1,14 +1,14 @@
 package org.joseph.friendsync.db.dao.user
 
-import com.joseph.db.dao.DatabaseFactory.dbQuery
-import com.joseph.db.dao.subscription.SubscriptionDao
-import com.joseph.db.tables.SubscriptionRow
-import com.joseph.db.tables.UserRow
-import com.joseph.mappers.ResultRowToUserInfoMapper
-import com.joseph.mappers.ResultRowToUserMapper
-import com.joseph.models.auth.*
-import com.joseph.models.user.UserInfo
-import com.joseph.security.hashPassword
+import org.joseph.friendsync.db.dao.DatabaseFactory.dbQuery
+import org.joseph.friendsync.db.dao.subscription.SubscriptionDao
+import org.joseph.friendsync.db.tables.SubscriptionRow
+import org.joseph.friendsync.db.tables.UserRow
+import org.joseph.friendsync.mappers.ResultRowToUserInfoMapper
+import org.joseph.friendsync.mappers.ResultRowToUserMapper
+import org.joseph.friendsync.models.auth.*
+import org.joseph.friendsync.models.user.UserInfo
+import org.joseph.friendsync.security.hashPassword
 import org.jetbrains.exposed.sql.*
 import java.util.*
 

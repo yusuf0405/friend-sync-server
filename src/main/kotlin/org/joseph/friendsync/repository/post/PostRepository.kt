@@ -1,7 +1,7 @@
 package org.joseph.friendsync.repository.post
 
-import com.joseph.models.post.*
-import com.joseph.util.Response
+import org.joseph.friendsync.models.post.*
+import org.joseph.friendsync.util.Response
 
 interface PostRepository {
     suspend fun addPost(params: AddPostParams): Response<PostResponse>

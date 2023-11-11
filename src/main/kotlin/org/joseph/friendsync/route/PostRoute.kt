@@ -1,10 +1,10 @@
 package org.joseph.friendsync.route
 
-import com.joseph.models.post.AddPostParams
-import com.joseph.repository.post.PostRepository
-import com.joseph.util.*
-import com.joseph.util.extensions.invalidCredentialsError
-import com.joseph.util.extensions.saveImage
+import org.joseph.friendsync.models.post.AddPostParams
+import org.joseph.friendsync.repository.post.PostRepository
+import org.joseph.friendsync.util.*
+import org.joseph.friendsync.util.extensions.invalidCredentialsError
+import org.joseph.friendsync.util.extensions.saveImage
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*

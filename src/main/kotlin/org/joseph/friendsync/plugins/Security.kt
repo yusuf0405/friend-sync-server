@@ -4,7 +4,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.joseph.models.auth.AuthResponse
+import org.joseph.friendsync.models.auth.AuthResponse
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -16,8 +16,7 @@ private val jwtSecret = System.getenv("jwt.secret")
 private const val CLAIM = "email"
 fun Application.configureSecurity() {
 
-    // Please read the jwt property from the config file if you are using EngineMain
-    val jwtRealm = "ktor sample app"
+    val jwtRealm = "friend sync app"
     authentication {
         jwt {
             realm = jwtRealm

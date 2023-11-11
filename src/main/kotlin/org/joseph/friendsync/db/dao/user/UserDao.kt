@@ -1,8 +1,8 @@
 package org.joseph.friendsync.db.dao.user
 
-import com.joseph.models.auth.SignUpParams
-import com.joseph.models.auth.User
-import com.joseph.models.user.UserInfo
+import org.joseph.friendsync.models.auth.SignUpParams
+import org.joseph.friendsync.models.auth.User
+import org.joseph.friendsync.models.user.UserInfo
 
 interface UserDao {
 

@@ -1,6 +1,6 @@
 package org.joseph.friendsync.util
 
-import com.joseph.repository.subscription.something_went_wrong
+import org.joseph.friendsync.repository.subscription.something_went_wrong
 import io.ktor.http.*
 
 sealed class Response<T>(

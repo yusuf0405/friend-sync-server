@@ -1,10 +1,10 @@
 package org.joseph.friendsync.route
 
-import com.joseph.models.auth.SignUpParams
-import com.joseph.models.categories.AddCategoryParams
-import com.joseph.repository.categories.CategoriesRepository
-import com.joseph.util.*
-import com.joseph.util.extensions.invalidCredentialsError
+import org.joseph.friendsync.models.auth.SignUpParams
+import org.joseph.friendsync.models.categories.AddCategoryParams
+import org.joseph.friendsync.repository.categories.CategoriesRepository
+import org.joseph.friendsync.util.*
+import org.joseph.friendsync.util.extensions.invalidCredentialsError
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*

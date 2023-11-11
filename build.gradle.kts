@@ -13,10 +13,10 @@ plugins {
                 id("org.jetbrains.kotlin.plugin.serialization") version "1.8.21"
 }
 
-group = "com.joseph"
+group = "org.joseph.friendsync"
 version = "0.0.1"
 application {
-    mainClass.set("com.joseph.ApplicationKt")
+    mainClass.set("org.joseph.friendsync.ApplicationKt")
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")

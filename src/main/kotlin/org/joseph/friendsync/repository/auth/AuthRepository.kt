@@ -1,9 +1,9 @@
 package org.joseph.friendsync.repository.auth
 
-import com.joseph.models.auth.AuthResponse
-import com.joseph.models.auth.SignInParams
-import com.joseph.models.auth.SignUpParams
-import com.joseph.util.Response
+import org.joseph.friendsync.models.auth.AuthResponse
+import org.joseph.friendsync.models.auth.SignInParams
+import org.joseph.friendsync.models.auth.SignUpParams
+import org.joseph.friendsync.util.Response
 
 interface AuthRepository {
 

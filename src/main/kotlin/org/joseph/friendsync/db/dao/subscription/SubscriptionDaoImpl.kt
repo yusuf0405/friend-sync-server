@@ -1,10 +1,10 @@
 package org.joseph.friendsync.db.dao.subscription
 
-import com.joseph.db.dao.DatabaseFactory.dbQuery
-import com.joseph.db.tables.SubscriptionRow
-import com.joseph.db.tables.UserRow
-import com.joseph.models.subscription.CreateOrCancelSubscription
-import com.joseph.models.subscription.SubscriptionResultUser
+import org.joseph.friendsync.db.dao.DatabaseFactory.dbQuery
+import org.joseph.friendsync.db.tables.SubscriptionRow
+import org.joseph.friendsync.db.tables.UserRow
+import org.joseph.friendsync.models.subscription.CreateOrCancelSubscription
+import org.joseph.friendsync.models.subscription.SubscriptionResultUser
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 

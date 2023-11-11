@@ -1,7 +1,7 @@
 package org.joseph.friendsync.db.dao.post
 
-import com.joseph.models.post.AddPostParams
-import com.joseph.models.post.Post
+import org.joseph.friendsync.models.post.AddPostParams
+import org.joseph.friendsync.models.post.Post
 
 interface PostDao {
 

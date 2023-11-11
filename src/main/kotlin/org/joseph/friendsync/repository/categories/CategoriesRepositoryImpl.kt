@@ -1,11 +1,11 @@
 package org.joseph.friendsync.repository.categories
 
-import com.joseph.db.dao.categories.CategoriesDao
-import com.joseph.models.categories.CategoriesResponse
-import com.joseph.models.categories.CategoryResponse
-import com.joseph.repository.subscription.something_went_wrong
-import com.joseph.util.Response
-import com.joseph.util.extensions.callSafe
+import org.joseph.friendsync.db.dao.categories.CategoriesDao
+import org.joseph.friendsync.models.categories.CategoriesResponse
+import org.joseph.friendsync.models.categories.CategoryResponse
+import org.joseph.friendsync.repository.subscription.something_went_wrong
+import org.joseph.friendsync.util.Response
+import org.joseph.friendsync.util.extensions.callSafe
 import io.ktor.http.*
 
 class CategoriesRepositoryImpl(

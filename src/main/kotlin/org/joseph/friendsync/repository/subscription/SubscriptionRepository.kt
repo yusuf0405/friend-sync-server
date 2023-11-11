@@ -1,10 +1,10 @@
 package org.joseph.friendsync.repository.subscription
 
-import com.joseph.models.subscription.CreateOrCancelSubscription
-import com.joseph.models.subscription.SubscriptionCountResponse
-import com.joseph.models.subscription.SubscriptionIdsResponse
-import com.joseph.models.subscription.SubscriptionUserResponse
-import com.joseph.util.Response
+import org.joseph.friendsync.models.subscription.CreateOrCancelSubscription
+import org.joseph.friendsync.models.subscription.SubscriptionCountResponse
+import org.joseph.friendsync.models.subscription.SubscriptionIdsResponse
+import org.joseph.friendsync.models.subscription.SubscriptionUserResponse
+import org.joseph.friendsync.util.Response
 
 interface SubscriptionRepository {
 

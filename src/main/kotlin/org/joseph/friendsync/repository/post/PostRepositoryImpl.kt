@@ -1,11 +1,11 @@
 package org.joseph.friendsync.repository.post
 
-import com.joseph.db.dao.post.PostDao
-import com.joseph.db.dao.subscription.SubscriptionDao
-import com.joseph.models.post.*
-import com.joseph.repository.subscription.something_went_wrong
-import com.joseph.util.Response
-import com.joseph.util.extensions.callSafe
+import org.joseph.friendsync.db.dao.post.PostDao
+import org.joseph.friendsync.db.dao.subscription.SubscriptionDao
+import org.joseph.friendsync.models.post.*
+import org.joseph.friendsync.repository.subscription.something_went_wrong
+import org.joseph.friendsync.util.Response
+import org.joseph.friendsync.util.extensions.callSafe
 import io.ktor.http.*
 import org.postgresql.util.PSQLException
 import java.util.concurrent.CancellationException

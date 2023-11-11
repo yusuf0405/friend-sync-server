@@ -1,15 +1,15 @@
 package org.joseph.friendsync.repository.user
 
-import com.joseph.db.dao.subscription.SubscriptionDao
-import com.joseph.db.dao.user.UserDao
-import com.joseph.models.auth.*
-import com.joseph.models.user.UserDetail
-import com.joseph.models.user.UserDetailResponse
-import com.joseph.models.user.UserListResponse
-import com.joseph.plugins.generateToken
-import com.joseph.repository.subscription.something_went_wrong
-import com.joseph.security.hashPassword
-import com.joseph.util.Response
+import org.joseph.friendsync.db.dao.subscription.SubscriptionDao
+import org.joseph.friendsync.db.dao.user.UserDao
+import org.joseph.friendsync.models.auth.*
+import org.joseph.friendsync.models.user.UserDetail
+import org.joseph.friendsync.models.user.UserDetailResponse
+import org.joseph.friendsync.models.user.UserListResponse
+import org.joseph.friendsync.plugins.generateToken
+import org.joseph.friendsync.repository.subscription.something_went_wrong
+import org.joseph.friendsync.security.hashPassword
+import org.joseph.friendsync.util.Response
 import io.ktor.http.*
 
 class UserRepositoryImpl(

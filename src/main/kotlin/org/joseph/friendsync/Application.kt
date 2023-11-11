@@ -1,11 +1,13 @@
 package org.joseph.friendsync
 
-import com.joseph.db.dao.DatabaseFactory
-import com.joseph.di.configureDi
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import com.joseph.plugins.*
+import org.joseph.friendsync.db.dao.DatabaseFactory
+import org.joseph.friendsync.di.configureDi
+import org.joseph.friendsync.plugins.configureRouting
+import org.joseph.friendsync.plugins.configureSecurity
+import org.joseph.friendsync.plugins.configureSerialization
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)

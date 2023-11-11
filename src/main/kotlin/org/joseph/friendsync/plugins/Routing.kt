@@ -1,6 +1,6 @@
 package org.joseph.friendsync.plugins
 
-import com.joseph.route.*
+import org.joseph.friendsync.route.*
 import io.ktor.server.routing.*
 import io.ktor.server.application.*
 

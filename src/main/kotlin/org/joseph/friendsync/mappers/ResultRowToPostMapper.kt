@@ -1,9 +1,9 @@
 package org.joseph.friendsync.mappers
 
-import com.joseph.db.tables.PostRow
-import com.joseph.db.tables.UserRow
-import com.joseph.models.post.Post
-import com.joseph.models.post.PostUser
+import org.joseph.friendsync.db.tables.PostRow
+import org.joseph.friendsync.db.tables.UserRow
+import org.joseph.friendsync.models.post.Post
+import org.joseph.friendsync.models.post.PostUser
 import org.jetbrains.exposed.sql.ResultRow
 
 interface ResultRowToPostMapper {

@@ -1,8 +1,8 @@
 package org.joseph.friendsync.route
 
-import com.joseph.repository.user.UserRepository
-import com.joseph.util.*
-import com.joseph.util.extensions.invalidCredentialsError
+import org.joseph.friendsync.repository.user.UserRepository
+import org.joseph.friendsync.util.*
+import org.joseph.friendsync.util.extensions.invalidCredentialsError
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*

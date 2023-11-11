@@ -1,7 +1,7 @@
 package org.joseph.friendsync.mappers
 
-import com.joseph.db.tables.UserRow
-import com.joseph.models.auth.User
+import org.joseph.friendsync.db.tables.UserRow
+import org.joseph.friendsync.models.auth.User
 import org.jetbrains.exposed.sql.ResultRow
 
 class ResultRowToUserMapper : Mapper<ResultRow, User> {

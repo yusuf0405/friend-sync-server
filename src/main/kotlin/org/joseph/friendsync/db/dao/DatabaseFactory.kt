@@ -1,6 +1,6 @@
 package org.joseph.friendsync.db.dao
 
-import com.joseph.db.tables.*
+import org.joseph.friendsync.db.tables.*
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.Dispatchers

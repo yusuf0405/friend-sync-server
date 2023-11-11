@@ -1,8 +1,8 @@
 package org.joseph.friendsync.repository.categories
 
-import com.joseph.models.categories.CategoriesResponse
-import com.joseph.models.categories.CategoryResponse
-import com.joseph.util.Response
+import org.joseph.friendsync.models.categories.CategoriesResponse
+import org.joseph.friendsync.models.categories.CategoryResponse
+import org.joseph.friendsync.util.Response
 
 interface CategoriesRepository {
 

@@ -1,13 +1,13 @@
 package org.joseph.friendsync.db.dao.post
 
-import com.joseph.db.dao.DatabaseFactory.dbQuery
-import com.joseph.db.tables.CategoriesRow
-import com.joseph.db.tables.PostImageUrlRow
-import com.joseph.db.tables.PostRow
-import com.joseph.db.tables.UserRow
-import com.joseph.mappers.ResultRowToPostMapper
-import com.joseph.models.post.AddPostParams
-import com.joseph.models.post.Post
+import org.joseph.friendsync.db.dao.DatabaseFactory.dbQuery
+import org.joseph.friendsync.db.tables.CategoriesRow
+import org.joseph.friendsync.db.tables.PostImageUrlRow
+import org.joseph.friendsync.db.tables.PostRow
+import org.joseph.friendsync.db.tables.UserRow
+import org.joseph.friendsync.mappers.ResultRowToPostMapper
+import org.joseph.friendsync.models.post.AddPostParams
+import org.joseph.friendsync.models.post.Post
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import java.util.*

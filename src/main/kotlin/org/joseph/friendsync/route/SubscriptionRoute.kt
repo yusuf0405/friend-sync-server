@@ -1,9 +1,9 @@
 package org.joseph.friendsync.route
 
-import com.joseph.models.subscription.CreateOrCancelSubscription
-import com.joseph.repository.subscription.SubscriptionRepository
-import com.joseph.util.USER_ID_PARAM
-import com.joseph.util.extensions.invalidCredentialsError
+import org.joseph.friendsync.models.subscription.CreateOrCancelSubscription
+import org.joseph.friendsync.repository.subscription.SubscriptionRepository
+import org.joseph.friendsync.util.USER_ID_PARAM
+import org.joseph.friendsync.util.extensions.invalidCredentialsError
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
