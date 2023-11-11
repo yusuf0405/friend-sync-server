@@ -1,1 +1,1 @@
-rootProject.name = "com.joseph.socialappktor"
+rootProject.name = "friend-sync-server"
