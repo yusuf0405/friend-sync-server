@@ -1,6 +1,7 @@
 package org.joseph.friendsync.models.post
 
 import kotlinx.serialization.Serializable
+import org.joseph.friendsync.models.user.UserInfo
 
 @Serializable
 data class AddPostParams(
@@ -24,7 +25,7 @@ data class PostListResponse(
 @Serializable
 data class Post(
     val id: Int,
-    val user: PostUser,
+    val user: UserInfo,
     val message: String?,
     val imageUrls: List<String>,
     val releaseDate: Long,
@@ -32,20 +33,6 @@ data class Post(
     val commentsCount: Int,
     val savedCount: Int,
 )
-
-@Serializable
-data class PostUser(
-    val id: Int?,
-    val name: String?,
-    val lastName: String?,
-    val userImage: String? = null,
-)
-
-
-
-
-
-
 
 
 

@@ -19,6 +19,7 @@ object DatabaseFactory {
             SchemaUtils.create(PostRow)
             SchemaUtils.create(SubscriptionRow)
             SchemaUtils.create(CategoriesRow)
+            SchemaUtils.create(CommentsRow)
         }
     }
 

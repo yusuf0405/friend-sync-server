@@ -11,5 +11,6 @@ fun Application.configureRouting() {
         subscriptionRoute()
         usersRoute()
         categoryRoute()
+        commentsRoute()
     }
 }

@@ -22,7 +22,6 @@ class PostDaoImpl(
                 it[userId] = params.userId
                 it[likesCount] = 0
                 it[savedCount] = 0
-                it[commentsCount] = 0
                 it[releaseDate] = System.currentTimeMillis()
             }
             val postRow = insertStatement.resultedValues?.singleOrNull()
@@ -49,7 +48,7 @@ class PostDaoImpl(
         return dbQuery {
             PostRow.select { PostRow.userId eq userId }
                 .orderBy(PostRow.releaseDate, SortOrder.DESC)
-                .map(::rowToPost)
+                .map { rowToPost(it) }
         }
     }
 
@@ -63,7 +62,7 @@ class PostDaoImpl(
             PostRow.select { PostRow.userId inList followedUserIds }
                 .orderBy(PostRow.releaseDate, SortOrder.DESC)
                 .limit(pageSize, offset.toLong())
-                .map(::rowToPost)
+                .map { rowToPost(it) }
         }
     }
 
@@ -79,11 +78,11 @@ class PostDaoImpl(
             PostRow.select { PostRow.message.lowerCase() like searchQuery }
                 .orderBy(PostRow.releaseDate, SortOrder.DESC)
                 .limit(pageSize, offset.toLong())
-                .map(::rowToPost)
+                .map { rowToPost(it) }
         }
     }
 
-    private fun rowToPost(row: ResultRow): Post {
+    private suspend fun rowToPost(row: ResultRow): Post {
         val userRow = UserRow.select { UserRow.id eq row[PostRow.userId] }.singleOrNull()
         val imageUrls = PostImageUrlRow
             .select { PostImageUrlRow.postId eq row[PostRow.id] }

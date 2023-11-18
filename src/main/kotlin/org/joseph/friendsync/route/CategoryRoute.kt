@@ -39,7 +39,7 @@ private fun Route.categoryById(repository: CategoriesRepository) {
     get("/{$CATEGORY_ID_PARAM}") {
         val categoryId = call.parameters[CATEGORY_ID_PARAM]?.toIntOrNull()
         if (categoryId == null) {
-            call.invalidCredentialsError(USER_ID_PARAM)
+            call.invalidCredentialsError(CATEGORY_ID_PARAM)
             return@get
         }
 

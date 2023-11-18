@@ -1,13 +1,13 @@
 package org.joseph.friendsync.route
 
-import org.joseph.friendsync.models.auth.SignInParams
-import org.joseph.friendsync.models.auth.SignUpParams
-import org.joseph.friendsync.repository.auth.AuthRepository
-import org.joseph.friendsync.util.extensions.invalidCredentialsError
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.joseph.friendsync.models.auth.SignInParams
+import org.joseph.friendsync.models.auth.SignUpParams
+import org.joseph.friendsync.repository.auth.AuthRepository
+import org.joseph.friendsync.util.extensions.invalidCredentialsError
 import org.koin.ktor.ext.inject
 
 private const val SIGN_UP_REQUEST_PATH = "/signup"
