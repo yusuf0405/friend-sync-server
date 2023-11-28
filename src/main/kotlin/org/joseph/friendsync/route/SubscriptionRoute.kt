@@ -73,7 +73,7 @@ private fun Route.subscriptionUsers(repository: SubscriptionRepository) {
 }
 
 private fun Route.subscriptionUserIds(repository: SubscriptionRepository) {
-    get("/user-ids/{$USER_ID_PARAM}") {
+    get("/{$USER_ID_PARAM}") {
         val userId = call.parameters[USER_ID_PARAM]?.toIntOrNull()
         if (userId == null) {
             call.invalidCredentialsError(USER_ID_PARAM)

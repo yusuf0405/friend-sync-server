@@ -44,13 +44,26 @@ class UserDaoImpl(
     }
 
     /**
-     *  Получить пользователей, на которых данный пользователь не подписан,
-     *  но на которых подписаны другие пользователи, на которых данный пользователь подписан.
+     * Получает список новых пользователей для указанного пользователя.
+     *
+     * Этот метод возвращает список рекомендованных для введенного пользователя на основе его подписок.
+     * Процесс включает в себя выявление пользователей, на которых подписан указанный пользователь,
+     * поиск пользователей, на которых подписаны эти подписчики, и фильтрацию пользователей, на которых
+     * уже подписан указанный пользователь. В результате получается список рекомендованных пользователей,
+     * включая тех из подписок и дополнительных пользователей для достижения количества 10.
+     *
+     * @param userId Уникальный идентификатор пользователя, для которого получаются новые пользователи.
+     * @return Список объектов [UserInfo], представляющих новых пользователей.
+     *
+     * @throws [Throwable], если происходит ошибка во время выполнения запроса к базе данных.
      */
     override suspend fun fetchOnboardingUsers(userId: Int): List<UserInfo> {
         return dbQuery {
             // Шаг 1: Получаем список пользователей, на которых подписан указанный пользователь
             val subscribedUsersIds = subscriptionDao.fetchSubscriptionUserIds(userId)
+
+            // Проверяем, подписан ли пользователь на максимально допустимое количество (11 пользователей)
+            if (subscribedUsersIds.size == 11) return@dbQuery emptyList()
 
             // Шаг 2: Получаем список пользователей, на которых подписаны пользователи из шага 1
             val subscribersIds = SubscriptionRow
@@ -61,7 +74,27 @@ class UserDaoImpl(
             val recommendedUserIds = subscribersIds - subscribedUsersIds.toSet()
 
             /* Получаем информацию о рекомендованных пользователях из таблицы Users */
-            return@dbQuery UserRow.select { UserRow.id inList recommendedUserIds }
+            val onboardingUsers = UserRow.select { UserRow.id inList recommendedUserIds }
+                .map(resultRowToUserInfoMapper::map)
+
+            if (onboardingUsers.size < 10) {
+                // Если рекомендованных пользователей меньше 10, дополним результат пользователями,
+                // на которых пользователь еще не подписан
+                val remainingUsers = fetchUsersNotSubscribed(userId, 10 - onboardingUsers.size)
+                onboardingUsers + remainingUsers.filter { it.id != userId }
+            } else {
+                // Если рекомендованных пользователей больше или равно 10, возвращаем первые 10
+                onboardingUsers.take(10)
+            }.toSet().toList()
+        }
+    }
+
+    // Функция для получения пользователей, на которых пользователь еще не подписан
+    private suspend fun fetchUsersNotSubscribed(userId: Int, count: Int): List<UserInfo> {
+        val subscribedUsersIds = subscriptionDao.fetchSubscriptionUserIds(userId)
+        return dbQuery {
+            UserRow.select { UserRow.id notInList subscribedUsersIds }
+                .limit(count)
                 .map(resultRowToUserInfoMapper::map)
         }
     }

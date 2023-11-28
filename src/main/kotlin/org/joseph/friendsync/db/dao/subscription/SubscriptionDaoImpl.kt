@@ -1,14 +1,15 @@
 package org.joseph.friendsync.db.dao.subscription
 
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.joseph.friendsync.db.dao.DatabaseFactory.dbQuery
 import org.joseph.friendsync.db.tables.SubscriptionRow
 import org.joseph.friendsync.db.tables.UserRow
 import org.joseph.friendsync.models.subscription.CreateOrCancelSubscription
 import org.joseph.friendsync.models.subscription.SubscriptionResultUser
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class SubscriptionDaoImpl : SubscriptionDao {
+
     override suspend fun fetchSubscriptionCount(userId: Int): Int {
         return dbQuery {
             SubscriptionRow.select { SubscriptionRow.followerId eq userId }.count().toInt()

@@ -35,7 +35,6 @@ fun Routing.postRoute() {
 }
 
 fun Route.postById(repository: PostRepository) {
-
     get("/{$POST_ID_PARAM}") {
         val postId = call.parameters[POST_ID_PARAM]?.toIntOrNull()
         if (postId == null) {
