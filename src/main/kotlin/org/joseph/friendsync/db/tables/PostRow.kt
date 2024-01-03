@@ -6,6 +6,7 @@ object PostRow : Table(name = "new_posts") {
     val message = varchar(name = "message", length = 250).nullable()
     val releaseDate = long(name = "release_date")
     val likesCount = integer(name = "likes_count")
+    val commentsCount = integer(name = "comments_count")
     val savedCount = integer(name = "saved_count")
     val userId = reference("user_id", UserRow.id)
 

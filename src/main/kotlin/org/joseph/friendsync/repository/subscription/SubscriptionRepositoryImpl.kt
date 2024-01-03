@@ -4,6 +4,7 @@ import org.joseph.friendsync.db.dao.subscription.SubscriptionDao
 import org.joseph.friendsync.models.subscription.*
 import org.joseph.friendsync.util.Response
 import io.ktor.http.*
+import org.joseph.friendsync.models.subscription.ShouldUserSubscriptionResponse
 import java.util.concurrent.CancellationException
 
 val something_went_wrong = "Something went wrong!"
@@ -12,11 +13,11 @@ class SubscriptionRepositoryImpl(
     private val subscriptionDao: SubscriptionDao,
 ) : SubscriptionRepository {
 
-    override suspend fun fetchSubscriptionCount(userId: Int): Response<SubscriptionCountResponse> {
+    override suspend fun fetchSubscriptionCount(userId: Int): Response<SubscriptionIdResponse> {
         return try {
             Response.Success(
-                data = SubscriptionCountResponse(
-                    data = ResultSubscriptionCount(subscriptionDao.fetchSubscriptionCount(userId))
+                data = SubscriptionIdResponse(
+                    data = ResultSubscriptionId(subscriptionDao.fetchSubscriptionCount(userId))
                 )
             )
         } catch (e: CancellationException) {
@@ -24,7 +25,7 @@ class SubscriptionRepositoryImpl(
         } catch (e: Exception) {
             Response.Error(
                 code = HttpStatusCode.InternalServerError,
-                data = SubscriptionCountResponse(
+                data = SubscriptionIdResponse(
                     errorMessage = something_went_wrong
                 )
             )
@@ -50,6 +51,48 @@ class SubscriptionRepositoryImpl(
         }
     }
 
+    override suspend fun fetchUserSubscriptions(userId: Int): Response<SubscriptionsResponse> {
+        return try {
+            Response.Success(
+                data = SubscriptionsResponse(
+                    data = subscriptionDao.fetchUserSubscriptions(userId)
+                )
+            )
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Response.Error(
+                code = HttpStatusCode.InternalServerError,
+                data = SubscriptionsResponse(
+                    errorMessage = e.message
+                )
+            )
+        }
+    }
+
+    override suspend fun hasUserSubscription(
+        userId: Int,
+        followingUserId: Int
+    ): Response<ShouldUserSubscriptionResponse> {
+        return try {
+            val isSubscribe = subscriptionDao.hasUserSubscription(userId, followingUserId)
+            Response.Success(
+                data = ShouldUserSubscriptionResponse(
+                    data = isSubscribe
+                )
+            )
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Response.Error(
+                code = HttpStatusCode.InternalServerError,
+                data = ShouldUserSubscriptionResponse(
+                    errorMessage = e.message
+                )
+            )
+        }
+    }
+
     override suspend fun fetchSubscriptionUsers(userId: Int): Response<SubscriptionUserResponse> {
         return try {
             Response.Success(
@@ -69,11 +112,11 @@ class SubscriptionRepositoryImpl(
         }
     }
 
-    override suspend fun createSubscription(createSubscription: CreateOrCancelSubscription): Response<SubscriptionCountResponse> {
+    override suspend fun createSubscription(createSubscription: CreateOrCancelSubscription): Response<SubscriptionIdResponse> {
         return try {
             Response.Success(
-                data = SubscriptionCountResponse(
-                    data = ResultSubscriptionCount(subscriptionDao.createSubscription(createSubscription))
+                data = SubscriptionIdResponse(
+                    data = ResultSubscriptionId(subscriptionDao.createSubscription(createSubscription))
                 )
             )
         } catch (e: CancellationException) {
@@ -81,18 +124,18 @@ class SubscriptionRepositoryImpl(
         } catch (e: Exception) {
             Response.Error(
                 code = HttpStatusCode.InternalServerError,
-                data = SubscriptionCountResponse(
+                data = SubscriptionIdResponse(
                     errorMessage = something_went_wrong
                 )
             )
         }
     }
 
-    override suspend fun cancelSubscription(cancelSubscription: CreateOrCancelSubscription): Response<SubscriptionCountResponse> {
+    override suspend fun cancelSubscription(cancelSubscription: CreateOrCancelSubscription): Response<SubscriptionIdResponse> {
         return try {
             Response.Success(
-                data = SubscriptionCountResponse(
-                    data = ResultSubscriptionCount(subscriptionDao.cancelSubscription(cancelSubscription))
+                data = SubscriptionIdResponse(
+                    data = ResultSubscriptionId(subscriptionDao.cancelSubscription(cancelSubscription))
                 )
             )
         } catch (e: CancellationException) {
@@ -100,7 +143,7 @@ class SubscriptionRepositoryImpl(
         } catch (e: Exception) {
             Response.Error(
                 code = HttpStatusCode.InternalServerError,
-                data = SubscriptionCountResponse(
+                data = SubscriptionIdResponse(
                     errorMessage = something_went_wrong
                 )
             )

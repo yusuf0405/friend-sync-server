@@ -12,5 +12,6 @@ fun Application.configureRouting() {
         usersRoute()
         categoryRoute()
         commentsRoute()
+        likedPostRoute()
     }
 }

@@ -1,7 +1,6 @@
 package org.joseph.friendsync.repository.user
 
-import org.joseph.friendsync.models.user.UserDetailResponse
-import org.joseph.friendsync.models.user.UserListResponse
+import org.joseph.friendsync.models.user.*
 import org.joseph.friendsync.util.Response
 
 interface UserRepository {
@@ -15,4 +14,8 @@ interface UserRepository {
     ): Response<UserListResponse>
 
     suspend fun fetchUserById(userId: Int): Response<UserDetailResponse>
+
+    suspend fun fetchUserPersonalInfoById(userId: Int): Response<UserPersonalInfoResponse>
+
+    suspend fun editUserWithParams(params: EditProfileParams): Response<EditProfileParamsResponse>
 }

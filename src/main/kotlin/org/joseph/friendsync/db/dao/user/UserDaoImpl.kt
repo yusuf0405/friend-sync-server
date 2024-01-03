@@ -10,11 +10,15 @@ import org.joseph.friendsync.models.auth.*
 import org.joseph.friendsync.models.user.UserInfo
 import org.joseph.friendsync.security.hashPassword
 import org.jetbrains.exposed.sql.*
+import org.joseph.friendsync.mappers.ResultRowToUserPersonalInfoMapper
+import org.joseph.friendsync.models.user.EditProfileParams
+import org.joseph.friendsync.models.user.UserPersonalInfo
 import java.util.*
 
 class UserDaoImpl(
     private val subscriptionDao: SubscriptionDao,
     private val resultRowToUserMapper: ResultRowToUserMapper,
+    private val resultRowToUserPersonalInfoMapper: ResultRowToUserPersonalInfoMapper,
     private val resultRowToUserInfoMapper: ResultRowToUserInfoMapper,
 ) : UserDao {
 
@@ -75,7 +79,7 @@ class UserDaoImpl(
 
             /* Получаем информацию о рекомендованных пользователях из таблицы Users */
             val onboardingUsers = UserRow.select { UserRow.id inList recommendedUserIds }
-                .map(resultRowToUserInfoMapper::map)
+                .map { resultRowToUserInfoMapper.map(it) }
 
             if (onboardingUsers.size < 10) {
                 // Если рекомендованных пользователей меньше 10, дополним результат пользователями,
@@ -89,13 +93,21 @@ class UserDaoImpl(
         }
     }
 
+    override suspend fun fetchUserPersonalInfoById(userId: Int): UserPersonalInfo? {
+        return dbQuery {
+            UserRow.select { UserRow.id eq userId }
+                .map(resultRowToUserPersonalInfoMapper::map)
+                .singleOrNull()
+        }
+    }
+
     // Функция для получения пользователей, на которых пользователь еще не подписан
     private suspend fun fetchUsersNotSubscribed(userId: Int, count: Int): List<UserInfo> {
         val subscribedUsersIds = subscriptionDao.fetchSubscriptionUserIds(userId)
         return dbQuery {
             UserRow.select { UserRow.id notInList subscribedUsersIds }
                 .limit(count)
-                .map(resultRowToUserInfoMapper::map)
+                .map { resultRowToUserInfoMapper.map(it) }
         }
     }
 
@@ -112,7 +124,7 @@ class UserDaoImpl(
             UserRow.select { (UserRow.firstName.lowerCase() like searchQuery) or (UserRow.lastName.lowerCase() like query) }
                 .orderBy(UserRow.release_date, SortOrder.DESC)
                 .limit(pageSize, offset.toLong())
-                .map(resultRowToUserInfoMapper::map)
+                .map { resultRowToUserInfoMapper.map(it) }
         }
     }
 
@@ -121,6 +133,31 @@ class UserDaoImpl(
             UserRow.select { UserRow.id eq userId }
                 .map(resultRowToUserMapper::map)
                 .singleOrNull()
+        }
+    }
+
+    override suspend fun editUserParams(params: EditProfileParams): EditProfileParams {
+        return dbQuery {
+
+            val user = UserRow.select { UserRow.id eq params.id }
+                .map(resultRowToUserMapper::map)
+                .singleOrNull() ?: throw IllegalArgumentException("User not found")
+
+            if (user.email != params.email && findByEmail(params.email) != null) {
+                throw IllegalArgumentException("A user with this email already exists!")
+            }
+
+            // Выполняем обновление пользователя в базе данных
+            UserRow.update({ UserRow.id eq params.id }) {
+                it[firstName] = params.name
+                it[lastName] = params.lastName
+                it[email] = params.email
+                it[bio] = params.bio
+                it[education] = params.education
+                it[avatar] = params.avatar
+            }
+
+            return@dbQuery params
         }
     }
 }

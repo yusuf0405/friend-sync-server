@@ -4,8 +4,10 @@ import org.joseph.friendsync.repository.user.UserRepository
 import org.joseph.friendsync.util.*
 import org.joseph.friendsync.util.extensions.invalidCredentialsError
 import io.ktor.server.application.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.joseph.friendsync.models.user.EditProfileParams
 import org.koin.ktor.ext.inject
 
 private const val USERS_ROUTE_NAME = "/users"
@@ -15,6 +17,8 @@ fun Routing.usersRoute() {
 
     route(USERS_ROUTE_NAME) {
         getById(repository)
+        getPersonalInfoById(repository)
+        editUser(repository)
         search(repository)
         onboarding(repository)
     }
@@ -65,6 +69,36 @@ private fun Route.search(repository: UserRepository) {
         )
     }
 
+}
+
+private fun Route.editUser(repository: UserRepository) {
+    post(EDIT_REQUEST_PATCH) {
+        val params = call.receiveNullable<EditProfileParams>()
+        if (params == null) {
+            call.invalidCredentialsError()
+            return@post
+        }
+        val result = repository.editUserWithParams(params)
+        call.respond(
+            status = result.code,
+            message = result.data
+        )
+    }
+}
+
+private fun Route.getPersonalInfoById(repository: UserRepository) {
+    get("/personal/{$USER_ID_PARAM}") {
+        val userId = call.parameters[USER_ID_PARAM]?.toIntOrNull()
+        if (userId == null) {
+            call.invalidCredentialsError(USER_ID_PARAM)
+            return@get
+        }
+        val result = repository.fetchUserPersonalInfoById(userId)
+        call.respond(
+            status = result.code,
+            message = result.data
+        )
+    }
 }
 
 private fun Route.getById(repository: UserRepository) {

@@ -22,5 +22,4 @@ class ResultRowToCommentMapper(
             releaseDate = this[CommentsRow.releaseDate],
         )
     }
-
 }

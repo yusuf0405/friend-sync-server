@@ -24,6 +24,7 @@ class AuthRepositoryImpl(
             )
         } else {
             val insertedUser = userDao.insert(params)
+            println("insertedUser = ${insertedUser?.name}")
             if (insertedUser == null) {
                 Response.Error(
                     code = HttpStatusCode.InternalServerError,

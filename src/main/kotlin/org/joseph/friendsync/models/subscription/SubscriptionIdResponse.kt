@@ -3,12 +3,12 @@ package org.joseph.friendsync.models.subscription
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SubscriptionCountResponse(
-    val data: ResultSubscriptionCount? = null,
+data class SubscriptionIdResponse(
+    val data: ResultSubscriptionId? = null,
     val errorMessage: String? = null
 )
 
 @Serializable
-data class ResultSubscriptionCount(
-    val followingCount: Int,
+data class ResultSubscriptionId(
+    val subscriptionId: Int,
 )

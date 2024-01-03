@@ -5,6 +5,7 @@ import org.joseph.friendsync.models.auth.User
 import org.jetbrains.exposed.sql.ResultRow
 
 class ResultRowToUserMapper : Mapper<ResultRow, User> {
+
     override fun map(from: ResultRow): User = from.run {
         User(
             id = this[UserRow.id],
@@ -16,6 +17,7 @@ class ResultRowToUserMapper : Mapper<ResultRow, User> {
             education = this[UserRow.education],
             profileBackground = this[UserRow.profileBackground],
             releaseDate = this[UserRow.release_date],
+            email = this[UserRow.email],
         )
     }
 }

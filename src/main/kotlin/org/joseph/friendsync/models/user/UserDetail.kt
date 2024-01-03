@@ -19,5 +19,5 @@ data class UserDetail(
     val education: String?,
     val releaseDate: Long,
     val followersCount: Int,
-    val followingCount: Int
+    val followingCount: Int,
 )

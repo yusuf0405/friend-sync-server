@@ -1,7 +1,6 @@
 package org.joseph.friendsync.db.dao.post
 
 import org.joseph.friendsync.db.dao.DatabaseFactory.dbQuery
-import org.joseph.friendsync.db.tables.CategoriesRow
 import org.joseph.friendsync.db.tables.PostImageUrlRow
 import org.joseph.friendsync.db.tables.PostRow
 import org.joseph.friendsync.db.tables.UserRow
@@ -9,7 +8,6 @@ import org.joseph.friendsync.mappers.ResultRowToPostMapper
 import org.joseph.friendsync.models.post.AddPostParams
 import org.joseph.friendsync.models.post.Post
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import java.util.*
 
 class PostDaoImpl(
@@ -22,6 +20,7 @@ class PostDaoImpl(
                 it[userId] = params.userId
                 it[likesCount] = 0
                 it[savedCount] = 0
+                it[commentsCount] = 0
                 it[releaseDate] = System.currentTimeMillis()
             }
             val postRow = insertStatement.resultedValues?.singleOrNull()
@@ -48,7 +47,7 @@ class PostDaoImpl(
         return dbQuery {
             PostRow.select { PostRow.userId eq userId }
                 .orderBy(PostRow.releaseDate, SortOrder.DESC)
-                .map { rowToPost(it) }
+                .mapNotNull { rowToPost(it) }
         }
     }
 
@@ -63,6 +62,7 @@ class PostDaoImpl(
                 .orderBy(PostRow.releaseDate, SortOrder.DESC)
                 .limit(pageSize, offset.toLong())
                 .map { rowToPost(it) }
+                .filterNotNull()
         }
     }
 
@@ -78,12 +78,13 @@ class PostDaoImpl(
             PostRow.select { PostRow.message.lowerCase() like searchQuery }
                 .orderBy(PostRow.releaseDate, SortOrder.DESC)
                 .limit(pageSize, offset.toLong())
-                .map { rowToPost(it) }
+                .mapNotNull { rowToPost(it) }
         }
     }
 
-    private suspend fun rowToPost(row: ResultRow): Post {
-        val userRow = UserRow.select { UserRow.id eq row[PostRow.userId] }.singleOrNull()
+    private suspend fun rowToPost(row: ResultRow): Post? {
+        val userRow =
+            UserRow.select { UserRow.id eq row[PostRow.userId] }.singleOrNull() ?: return null
         val imageUrls = PostImageUrlRow
             .select { PostImageUrlRow.postId eq row[PostRow.id] }
             .map { it[PostImageUrlRow.imageUrl] }

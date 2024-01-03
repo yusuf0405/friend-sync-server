@@ -2,11 +2,13 @@ package org.joseph.friendsync.db.tables
 
 import org.jetbrains.exposed.sql.Table
 
-object SubscriptionRow : Table(name = "subscriptions") {
+object LikesPostRow : Table(name = "likes_post") {
+
     val id = integer(name = "id").autoIncrement()
-    val followerId = reference("follower_id", UserRow.id)
-    val followingId = reference(name = "following_Id", UserRow.id)
+    val userId = reference("user_id", UserRow.id)
+    val postId = reference("post_id", PostRow.id)
 
     override val primaryKey: PrimaryKey
         get() = PrimaryKey(id)
 }
+

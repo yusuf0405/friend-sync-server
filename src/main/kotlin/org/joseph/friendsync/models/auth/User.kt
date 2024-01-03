@@ -10,6 +10,7 @@ data class User(
     val bio: String?,
     val avatar: String?,
     val password: String,
+    val email: String,
     val profileBackground: String?,
     val education: String?,
     val releaseDate: Long,

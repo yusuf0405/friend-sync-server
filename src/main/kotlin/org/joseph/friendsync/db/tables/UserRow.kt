@@ -2,7 +2,7 @@ package org.joseph.friendsync.db.tables
 
 import org.jetbrains.exposed.sql.Table
 
-object UserRow : Table(name = "new_users") {
+object UserRow : Table(name = "users") {
     val id = integer(name = "user_id").autoIncrement()
     val firstName = varchar(name = "first_name", length = 250)
     val lastName = varchar(name = "last_name", length = 250)

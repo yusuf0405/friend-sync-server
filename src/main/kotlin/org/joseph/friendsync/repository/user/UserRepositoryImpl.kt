@@ -1,16 +1,12 @@
 package org.joseph.friendsync.repository.user
 
+import io.ktor.http.*
 import org.joseph.friendsync.db.dao.subscription.SubscriptionDao
 import org.joseph.friendsync.db.dao.user.UserDao
-import org.joseph.friendsync.models.auth.*
-import org.joseph.friendsync.models.user.UserDetail
-import org.joseph.friendsync.models.user.UserDetailResponse
-import org.joseph.friendsync.models.user.UserListResponse
-import org.joseph.friendsync.plugins.generateToken
+import org.joseph.friendsync.models.auth.AuthResponse
+import org.joseph.friendsync.models.user.*
 import org.joseph.friendsync.repository.subscription.something_went_wrong
-import org.joseph.friendsync.security.hashPassword
 import org.joseph.friendsync.util.Response
-import io.ktor.http.*
 
 class UserRepositoryImpl(
     private val userDao: UserDao,
@@ -76,7 +72,7 @@ class UserRepositoryImpl(
                         education = user.education,
                         releaseDate = user.releaseDate,
                         followersCount = subscriptionDao.fetchSubscriptionCount(userId),
-                        followingCount = subscriptionDao.fetchFollowingCount(userId)
+                        followingCount = subscriptionDao.fetchFollowingCount(userId),
                     )
                 )
             )
@@ -84,6 +80,46 @@ class UserRepositoryImpl(
             Response.Error(
                 code = HttpStatusCode.InternalServerError,
                 data = UserDetailResponse(
+                    errorMessage = something_went_wrong
+                )
+            )
+        }
+    }
+
+    override suspend fun fetchUserPersonalInfoById(userId: Int): Response<UserPersonalInfoResponse> {
+        return try {
+            val user = userDao.fetchUserPersonalInfoById(userId)
+            if (user == null) Response.Error(
+                code = HttpStatusCode.InternalServerError,
+                data = UserPersonalInfoResponse(errorMessage = "The user with this ID was not found!")
+            )
+            else Response.Success(
+                data = UserPersonalInfoResponse(
+                    data = user
+                )
+            )
+        } catch (e: Throwable) {
+            Response.Error(
+                code = HttpStatusCode.InternalServerError,
+                data = UserPersonalInfoResponse(
+                    errorMessage = something_went_wrong
+                )
+            )
+        }
+    }
+
+    override suspend fun editUserWithParams(params: EditProfileParams): Response<EditProfileParamsResponse> {
+        return try {
+            val result = userDao.editUserParams(params)
+            Response.Success(
+                data = EditProfileParamsResponse(
+                    data = result
+                )
+            )
+        } catch (e: Throwable) {
+            Response.Error(
+                code = HttpStatusCode.InternalServerError,
+                data = EditProfileParamsResponse(
                     errorMessage = something_went_wrong
                 )
             )
