@@ -5,7 +5,7 @@ import io.ktor.client.statement.*
 import io.ktor.server.testing.*
 import kotlin.test.*
 import io.ktor.http.*
-import com.joseph.plugins.*
+import org.joseph.friendsync.plugins.configureRouting
 
 class ApplicationTest {
     @Test
